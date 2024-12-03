@@ -1,9 +1,15 @@
+// Description: Model for vehicule.
 class VehiculeModel {
-  constructor(id, marque, modele, annee, prix) {
-    this.id = vehicule.id;
-    this.marque = vehicule.marque;
-    this.modele = vehicule.modele;
-    this.annee = vehicule.annee;
-    this.prix = vehicule.prix;
+  constructor(marque, modele, annee, prix) {
+    this.marque = marque;
+    this.modele = modele;
+    this.annee = annee;
+    this.prix = prix;
+  }
+
+  isValid() {
+    return this.marque && this.modele && this.annee && this.prix;
   }
 }
+
+module.exports = new VehiculeModel();

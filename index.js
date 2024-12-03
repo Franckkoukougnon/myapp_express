@@ -1,38 +1,34 @@
-const express = require("express");
-// npm install express
-const app = express();
+const express = require("express"); // Importer Express
+const bodyParser = require("body-parser"); // Importer body-parser
+const vehiculeRoutes = require("./routes/vehiculeRoutes"); // Importer tes routes
+const app = express(); // Créer une application Express
+const port = 3000; // Port du serveur
+const swaggerUi = require("swagger-ui-express"); // Correctement importer Swagger UI
+const swaggerDocs = require("./swagger/swagger"); // Importer vos spécifications Swagger
 
-// nommé le port
-const port = 3000;
-
-// parser le Json
-const bodyParser = require("body-parser");
-
-// utiliser le body-parser
+// Configurer body-parser pour parser le JSON
 app.use(bodyParser.json());
 
+// Route pour Swagger
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// Importer et tester la connexion à la base de données
 const db = require("./config/db");
 
-// créer une route
-app.post("/koukougnon/:id", (req, res) => {
-  console.log(req.params);
-  res.send(req.params);
+// Tester la connexion à la base de données
+db.getConnection((err) => {
+  if (err) {
+    console.error("Erreur de connexion à la base de données :", err);
+  } else {
+    console.log("Connexion réussie à la base de données.");
+  }
 });
 
-app.post("/koukougnon", (req, res) => {
-  console.log(req.body);
-  res.send(req.body);
-});
+// Utiliser les routes de véhicule
+app.use("/api/vehicules", vehiculeRoutes);
 
-app.get("/koukougnon", async (req, res) => {
-  const [rows] = await db.query("SELECT * FROM vehicules");
-  res.send(rows);
-});
-
-// démarrer le serveur
+// Démarrer le serveur
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  console.log(`Swagger UI disponible sur http://localhost:${port}/api-docs`);
 });
-
-// lancer le serveur
-// node index.js
